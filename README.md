@@ -173,13 +173,30 @@ sudo pacman -S mesa lib32-mesa vulkan-intel lib32-vulkan-intel intel-media-drive
 
 Editar `/etc/mkinitcpio.conf`:
 
-1. En la línea `MODULES=()` agregar:
+1. En la línea `MODULES=()` agregar los módulos de video. Abre el archivo con:
 
-   ```
-   intel_agp i915 nvidia nvidia_modeset nvidia_uvm nvidia_drm
+   ```bash
+   sudo nano /etc/mkinitcpio.conf
    ```
 
-2. Regenerar:
+2. Busca la línea que dice `MODULES=()` y cámbiala para que quede **exactamente así:**
+
+   > **❌ Antes (original):**
+   > ```
+   > MODULES=()
+   > ```
+   >
+   > **✅ Después (como debe quedar):**
+   > ```
+   > MODULES=(intel_agp i915 nvidia nvidia_modeset nvidia_uvm nvidia_drm)
+   > ```
+
+   > [!WARNING]
+   > No borres los paréntesis `()`. Los módulos van **dentro** de ellos, separados por espacios.
+
+3. Guarda y sal (`Ctrl+O`, `Enter`, `Ctrl+X`).
+
+4. Regenerar el initramfs:
 
    ```bash
    sudo mkinitcpio -P
@@ -279,11 +296,22 @@ Como tu laptop tiene un **i9 de 12va generación** y gráficos híbridos, el sis
 
 2. Busca la sección `[LightDM]` (está casi al principio).
 
-3. Descomenta (quita el `#`) o añade la siguiente línea:
+3. Descomenta (quita el `#`) o añade la línea `logind-check-graphical=true`. La sección debe quedar **así:**
 
-   ```ini
-   logind-check-graphical=true
-   ```
+   > **❌ Antes (original):**
+   > ```ini
+   > [LightDM]
+   > #logind-check-graphical=false
+   > ```
+   >
+   > **✅ Después (como debe quedar):**
+   > ```ini
+   > [LightDM]
+   > logind-check-graphical=true
+   > ```
+
+   > [!WARNING]
+   > Asegúrate de quitar el `#` del inicio de la línea Y cambiar `false` por `true`. Si la línea no existe, simplemente agrégala debajo de `[LightDM]`.
 
 4. Guarda y sal (`Ctrl+O`, `Enter`, `Ctrl+X`).
 
@@ -354,6 +382,16 @@ if [ -f "$AC_PATH" ]; then
 fi
 ```
 
+**Después de crear el archivo, dale los permisos necesarios:**
+
+```bash
+sudo chown daffodils:daffodils /usr/local/bin/toggle_refresh_rate.sh
+sudo chmod +x /usr/local/bin/toggle_refresh_rate.sh
+```
+
+> [!IMPORTANT]
+> Sin estos permisos el script **no se ejecutará**. Si reinstalaste el sistema, recuerda correr estos dos comandos de nuevo.
+
 ---
 
 ### 🛰️ Paso C: El Gatillo (udev)
@@ -365,6 +403,15 @@ Para que el Kernel "detone" el script solo cuando sea necesario.
 ```
 SUBSYSTEM=="power_supply", ACTION=="change", RUN+="/usr/local/bin/toggle_refresh_rate.sh"
 ```
+
+**Activar la regla sin reiniciar:**
+
+```bash
+sudo udevadm control --reload-rules && sudo udevadm trigger
+```
+
+> [!TIP]
+> Este comando recarga las reglas de udev en caliente. Si no lo ejecutas, la regla no se activará hasta el próximo reinicio.
 
 ---
 

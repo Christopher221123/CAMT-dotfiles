@@ -2,13 +2,13 @@
 
 # 🐧 Arch Linux — Guía de Instalación Completa
 
-### Dual Boot con Windows · Intel + NVIDIA · BSPWM + Gh0stzk Rice
+### Dual Boot con Windows · Intel + NVIDIA · BSPWM + Gh0stzk Rice · LightDM · EnvyControl
 
 ![Arch Linux](https://img.shields.io/badge/Arch_Linux-1793D1?style=for-the-badge&logo=arch-linux&logoColor=white)
 ![NVIDIA](https://img.shields.io/badge/NVIDIA-76B900?style=for-the-badge&logo=nvidia&logoColor=white)
 ![Intel](https://img.shields.io/badge/Intel-0071C5?style=for-the-badge&logo=intel&logoColor=white)
 ![BSPWM](https://img.shields.io/badge/BSPWM-2E3440?style=for-the-badge&logo=linux&logoColor=white)
-![KDE](https://img.shields.io/badge/KDE_Plasma-1D99F3?style=for-the-badge&logo=kde&logoColor=white)
+![LightDM](https://img.shields.io/badge/LightDM-4A4A4A?style=for-the-badge&logo=linux&logoColor=white)
 ![Steam](https://img.shields.io/badge/Steam-000000?style=for-the-badge&logo=steam&logoColor=white)
 
 ---
@@ -24,13 +24,11 @@
 ## 📑 Tabla de Contenidos
 
 - [1. 🏗️ Fase de Preparación (Archinstall / Base)](#-1-fase-de-preparación-archinstall--base)
-  - [⚠️ En caso de que instalaste primero Windows](#️-en-caso-de-que-instalaste-primero-windows)
-- [2. 🏎️ Drivers y Gráficos (Intel + NVIDIA)](#️-2-drivers-y-gráficos-intel--nvidia)
+  - [⚠️ En caso de que instalaste primero Windows](#-en-caso-de-que-instalaste-primero-windows)
+- [2. 🏎️ Drivers y Gráficos (Intel + NVIDIA)](#%EF%B8%8F-2-drivers-y-gráficos-intel--nvidia)
 - [3. 🎨 Entorno de Trabajo (Gh0stzk + BSPWM)](#-3-entorno-de-trabajo-gh0stzk--bspwm)
-- [4. 🛠️ Capa de Utilidad (KDE Plasma Minimal)](#️-4-capa-de-utilidad-kde-plasma-minimal)
-- [5. 🎮 Gaming y Aplicaciones Especiales](#-5-gaming-y-aplicaciones-especiales)
-- [6. 🧹 Limpieza y Auditoría (Post-Instalación)](#-6-limpieza-y-auditoría-post-instalación)
-- [7. 🧪 Pruebas de Verificación](#-7-pruebas-de-verificación)
+- [4. 🖥️ Gestor de Inicio de Sesión (LightDM)](#%EF%B8%8F-4-gestor-de-inicio-de-sesión-lightdm)
+- [5. ⚡ Configuración Avanzada: Energía y Pantalla (BSPWM)](#-5-configuración-avanzada-energía-y-pantalla-bspwm)
 
 ---
 
@@ -66,15 +64,15 @@ Al usar `archinstall` o manual, vamos a tener siempre en cuenta esto:
 
 - Un USB con el instalador de Windows (10 u 11).
 - Saber que los **números de volumen cambian** en cada reinicio (no confiar en memoria).
-- **Para mi laptop en especifico tener los controladores IRST** (Para que pueda reconocer los discos ya que en mi procesador i9 12va generacion hay ese problema).
+- **Para mi laptop en especifico tener los controladores IRST** (Para que pueda reconocer los discos ya que en mi procesador i9 12va generacion hay ese problema)
 
 ---
 
 #### 2. Acceder a la Consola
 
 1. Conecta el USB y arranca el PC desde él (UEFI).
-2. Avanzamos hasta llegar al punto de selección de disco.
-3. Instalamos el IRST y regresamos hasta la pantalla de selección de idioma.
+2. Avanzamos hasta llegar al punto de seleccion de disco
+3. Instalamos el IRST y regresamos hasta la pantalla de seleccion de idioma
 4. En la primera pantalla (selección de idioma), presiona:
 
    > **SHIFT + F10**
@@ -160,9 +158,9 @@ sudo grub-mkconfig -o /boot/grub/grub.cfg
 
 ## 🏎️ 2. Drivers y Gráficos (Intel + NVIDIA)
 
-Instalación de los controladores gráficos para el correcto funcionamiento.
+Instalacion de los controladores graficos para el correcto funcionamiento
 
-### 📦 Instalación de Drivers
+### 📦 Instalacion de Drivers
 
 Instalamos todos los drivers para evitar el error de dependencias de 32 bits:
 
@@ -225,13 +223,13 @@ Para evitar errores como el de `fzf-tab` (ZSH) o iconos rotos, instalamos los co
    sudo pacman -S bspwm sxhkd polybar picom dunst rofi thunar feh maim xdotool xclip
    ```
 
-2. **Fuentes e Iconos (Evita los cuadros con X):**
+2. **Dependencias de temas:**
 
    ```bash
    sudo pacman -S ttf-jetbrains-mono-nerd ttf-jetbrains-mono ttf-font-awesome
    ```
 
-3. **Fix preventivo para ZSH (El error del directorio):**
+3. **Fix preventivo para ZSH:**
 
    ```bash
    sudo mkdir -p /usr/share/zsh/plugins/
@@ -253,65 +251,124 @@ chmod +x RiceInstaller
 ./RiceInstaller
 ```
 
-> [!NOTE]
-> Durante el `RiceInstaller`, cuando pregunte por instalar dependencias, dile que **SÍ**. Aunque ya las instalamos, el script hará una verificación final y configurará los archivos `.config` de forma automática.
-
----
-
-## 🛠️ 4. Capa de Utilidad (KDE Plasma Minimal)
-
-Instalamos KDE solo para tener las herramientas de sistema cuando las necesites, pero sin el "bloat".
+### 🔧 Instalar EnvyControl
 
 ```bash
-sudo pacman -S plasma-desktop sddm dolphin konsole
+yay -S envycontrol
 ```
 
-> [!IMPORTANT]
-> Si vas a usar **LightDM** (como pidió Christopher), no instales `sddm`.
+---
+
+## 🖥️ 4. Gestor de Inicio de Sesión (LightDM)
+
+### A. Instalación de Componentes
+
+```bash
+sudo pacman -S lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings
+```
+
+### B. Configuración Crítica para Hardware Moderno
+
+Como tu laptop tiene un **i9 de 12va generación** y gráficos híbridos, el sistema arranca tan rápido que LightDM puede intentar abrirse antes de que los drivers de video estén listos. Para evitar una pantalla negra, haz este ajuste:
+
+1. **Editar el archivo de configuración:**
+
+   ```bash
+   sudo nano /etc/lightdm/lightdm.conf
+   ```
+
+2. Busca la sección `[LightDM]` (está casi al principio).
+
+3. Descomenta (quita el `#`) o añade la siguiente línea:
+
+   ```ini
+   logind-check-graphical=true
+   ```
+
+4. Guarda y sal (`Ctrl+O`, `Enter`, `Ctrl+X`).
+
+### C. Activación del Servicio
+
+Este paso es el que le dice a Arch que, al encender, debe lanzar la interfaz gráfica automáticamente.
+
+```bash
+sudo systemctl enable lightdm
+```
 
 ---
 
-## 🎮 5. Gaming y Aplicaciones Especiales
+## ⚡ 5. Configuración Avanzada: Energía y Pantalla (BSPWM)
 
-Para que Elden Ring y tus tareas de la PUCESA funcionen:
+Aquí es donde configuramos que el sistema sea inteligente y cambie los hercios según si estás conectado a la corriente o usando la batería.
 
-| **Aplicación** | **Comando de Instalación** | **Notas** |
-| --- | --- | --- |
-| **Steam** | `sudo pacman -S steam` | — |
-| **Modo High Performance** | — | Usar siempre `prime-run %command%` en las opciones de lanzamiento de Steam. |
-| **Notion** | `paru -S notion-app-electron` | Instalado desde AUR. |
+**A. Primero apagamos la tarjeta grafica dedicada:**
 
----
+```bash
+sudo envycontrol -s integrated
+```
 
-## 🧹 6. Limpieza y Auditoría (Post-Instalación)
-
-Para mantener el sistema como un "sistema de ingeniería":
-
-| **Comando** | **Función** |
-| --- | --- |
-| `pacman -Qqe` | Ver lista de paquetes instalados explícitamente. |
-| `sudo pacman -Rs $(pacman -Qdtq)` | Eliminar huérfanos (usar con cuidado). |
-| `sudo paccache -r` | Limpiar caché de paquetes viejos. |
+> Reiniciamos el sistema operativo después de ejecutar este comando.
 
 ---
 
-## 🧪 7. Pruebas de Verificación
+### 🔍 Paso A: Auditoría de Identificadores
 
-| **Verificación** | **Comando** |
-| --- | --- |
-| ¿Gráfica Intel activa? | `glxinfo \| grep "OpenGL renderer"` |
-| ¿NVIDIA despierta? | `prime-run glxinfo \| grep "OpenGL renderer"` |
-| ¿Audio ok? | `wpctl status` |
+Antes de activar el script (especialmente tras una reinstalación o cambio de modo de GPU), verifica estos datos:
+
+1. **Monitor ID:** Ejecuta `xrandr | grep " connected"`. (Ejemplos: `DP-2`, `eDP-1`).
+2. **Cargador ID:** Ejecuta `ls /sys/class/power_supply/`. (Ejemplo: `ADP0`).
+3. **Usuario:** Tu nombre de usuario actual (Ejemplo: `daffodils`).
+
+---
+
+### 🛠️ Paso B: El Script Maestro
+
+**Ruta:** `/usr/local/bin/toggle_refresh_rate.sh`
+
+```bash
+#!/bin/bash
+
+# ==========================================
+# SECCIÓN DE IDENTIDAD (Ajustar según Auditoría)
+# ==========================================
+USER_NAME="daffodils"
+MONITOR_ID="DP-2"
+AC_ID="ADP0"
+# ==========================================
+
+# Variables de entorno
+export DISPLAY=:0
+export XAUTHORITY="/home/$USER_NAME/.Xauthority"
+AC_PATH="/sys/class/power_supply/$AC_ID/online"
+
+# Lógica de conmutación
+if [ -f "$AC_PATH" ]; then
+    AC_STATUS=$(cat "$AC_PATH")
+    if [ "$AC_STATUS" -eq 1 ]; then
+        # Conectado -> 300Hz
+        xrandr --output "$MONITOR_ID" --mode 1920x1080 --rate 300.00
+    else
+        # Batería -> 60Hz
+        xrandr --output "$MONITOR_ID" --mode 1920x1080 --rate 60.00
+    fi
+fi
+```
+
+---
+
+### 🛰️ Paso C: El Gatillo (udev)
+
+Para que el Kernel "detone" el script solo cuando sea necesario.
+
+**Ruta:** `/etc/udev/rules.d/99-powermanagement.rules`
+
+```
+SUBSYSTEM=="power_supply", ACTION=="change", RUN+="/usr/local/bin/toggle_refresh_rate.sh"
+```
 
 ---
 
 <div align="center">
-
-### 💡 ¿Próximo paso?
-
-¿Qué te parece esta estructura para tu Notion, Christopher? Si quieres, **podemos redactar el script automático (.sh)** que ejecute todos estos pasos de una sola vez para que tu próxima instalación sea literalmente apretar un botón y sentarte a ver cómo se configura sola. ¿Te gustaría que hagamos eso?
-
----
 
 <sub>📅 Última actualización — Febrero 2026</sub>
 

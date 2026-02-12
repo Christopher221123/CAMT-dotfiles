@@ -23,13 +23,12 @@ Estabilidad absoluta, renderizado bajo demanda (On-Demand) y estética premium.
 
 - [1. 🏗️ Fase 1: Preparación (Archinstall / Base)](#-1-fase-1-preparación-archinstall--base)
   - [⚠️ Guía de Reparación de Windows (Dual Boot)](#-guía-de-reparación-de-windows-dual-boot)
-- [2. �️ Fase 2: Drivers, Gráficos y Dependencias](#-2-fase-2-drivers-gráficos-y-dependencias)
-  - [A. La Regla de Oro (Headers & Multilib)](#a-la-regla-de-oro-headers--multilib)
-  - [B. Instalación de Drivers (Intel + NVIDIA Prime)](#b-instalación-de-drivers-intel--nvidia-prime)
-  - [C. Dependencias Críticas (Gaming/System)](#c-dependencias-críticas-gamingsystem)
-- [3. 📦 Fase 3: Herramientas (Paru)](#-3-fase-3-herramientas-paru)
-- [4. 🎨 Fase 4: Entorno de Trabajo (Gh0stzk + Rice)](#-4-fase-4-entorno-de-trabajo-gh0stzk--rice)
-- [5. ⚡ Fase 5: Finalización y Energía](#-5-fase-5-finalización-y-energía)
+- [2. 🏎️ Fase 2: Drivers, Gráficos y Dependencias](#-2-fase-2-drivers-gráficos-y-dependencias)
+- [3. 🎨 Fase 3: Entorno de Trabajo (Capas)](#-3-fase-3-entorno-de-trabajo-capas)
+  - [A. Capa Base: AUR Helper (Paru)](#a-capa-base-aur-helper-paru)
+  - [B. Capa de Estabilidad: Prerequisitos y ZSH](#b-capa-de-estabilidad-prerequisitos-y-zsh)
+  - [C. Capa Estética: RiceInstaller](#c-capa-estética-riceinstaller)
+- [4. ⚡ Fase 4: Finalización y Energía](#-4-fase-4-finalización-y-energía)
 
 ---
 
@@ -191,9 +190,13 @@ sudo pacman -S base-devel git NetworkManager bluez bluez-utils pipewire pipewire
 
 ---
 
-## 📦 3. Fase 3: Herramientas (Paru)
+## 🎨 3. Fase 3: Entorno de Trabajo (Capas)
 
-Reemplazamos `yay` por `paru` (más rápido, escrito en Rust).
+En esta fase pasamos de la terminal básica a la interfaz gráfica personalizada capa por capa.
+
+### A. Capa Base: AUR Helper (Paru)
+
+Antes de cualquier otra cosa, necesitamos la herramienta para instalar paquetes de la comunidad (AUR), la cual reemplazará a `yay`.
 
 ```bash
 cd ~
@@ -202,36 +205,44 @@ cd paru
 makepkg -si
 ```
 
+### B. Capa de Estabilidad: Prerequisitos y ZSH
+
+Para evitar errores visuales o de la terminal (como el famoso error de `fzf-tab`), instalamos esto **antes**.
+
+1.  **Dependencias Visuales:**
+    ```bash
+    paru -S xorg-server xorg-xinit bspwm sxhkd polybar picom dunst rofi thunar feh maim xdotool xclip \
+            ttf-jetbrains-mono-nerd ttf-font-awesome
+    ```
+
+2.  **Fix Preventivo para ZSH (Crítico):**
+    ```bash
+    sudo mkdir -p /usr/share/zsh/plugins/
+    sudo git clone https://github.com/Aloxaf/fzf-tab /usr/share/zsh/plugins/fzf-tab-git
+    ```
+
+### C. Capa Estética: RiceInstaller
+
+Ahora que el sistema tiene todo lo necesario, el instalador de Gh0stzk funcionará de manera fluida.
+
+1.  **Ejecutar Instalador:**
+    ```bash
+    curl -LO http://gh0stzk.github.io/dotfiles/RiceInstaller
+    chmod +x RiceInstaller
+    ./RiceInstaller
+    ```
+
+2.  **Optimización Picom (GLX Híbrido):**
+    Asegurar que `~/.config/bspwm/config/picom.conf` use:
+    ```ini
+    backend = "glx";
+    vsync = true;
+    use-damage = false;  # CRITICO para Intel Gen 12+
+    ```
+
 ---
 
-## 🎨 4. Fase 4: Entorno de Trabajo (Gh0stzk + Rice)
-
-### A. Prerequisitos del Rice
-Instalamos esto primero para evitar errores visuales.
-
-```bash
-paru -S bspwm sxhkd polybar picom dunst rofi thunar feh maim xdotool xclip \
-        ttf-jetbrains-mono-nerd ttf-font-awesome
-```
-
-### B. Instalar el Rice
-```bash
-curl -LO http://gh0stzk.github.io/dotfiles/RiceInstaller
-chmod +x RiceInstaller
-./RiceInstaller
-```
-
-### C. Optimización Picom (GLX Híbrido)
-Asegurar que `~/.config/bspwm/config/picom.conf` use:
-```ini
-backend = "glx";
-vsync = true;
-use-damage = false;  # CRITICO para Intel Gen 12+
-```
-
----
-
-## ⚡ 5. Fase 5: Finalización y Energía
+## ⚡ 4. Fase 4: Finalización y Energía
 
 ### A. LightDM (Login)
 Evitar pantalla negra por arranque rápido.

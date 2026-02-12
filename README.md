@@ -1,17 +1,18 @@
 <div align="center">
 
-# 🐧 Arch Linux — Guía Maestra de Instalación Híbrida
-### Intel (Sistema) + NVIDIA (Juegos) · BSPWM + Gh0stzk Rice · Paru · Prime Offloading
+# 🐧 Arch Linux — Guía de Instalación Maestra
+### Dual Boot Windows 11 · Intel + NVIDIA · BSPWM + Rice · Steam Ready
 
 ![Arch Linux](https://img.shields.io/badge/Arch_Linux-1793D1?style=for-the-badge&logo=arch-linux&logoColor=white)
-![NVIDIA Prime](https://img.shields.io/badge/NVIDIA_Prime-76B900?style=for-the-badge&logo=nvidia&logoColor=white)
-![Intel Iris](https://img.shields.io/badge/Intel_Iris-0071C5?style=for-the-badge&logo=intel&logoColor=white)
-![BSPWM](https://img.shields.io/badge/BSPWM-2E3440?style=for-the-badge&logo=linux&logoColor=white)
-![LightDM](https://img.shields.io/badge/LightDM-4A4A4A?style=for-the-badge&logo=linux&logoColor=white)
+![NVIDIA](https://img.shields.io/badge/NVIDIA-76B900?style=for-the-badge&logo=nvidia&logoColor=white)
+![Intel](https://img.shields.io/badge/Intel-0071C5?style=for-the-badge&logo=intel&logoColor=white)
+![Steam](https://img.shields.io/badge/Steam-000000?style=for-the-badge&logo=steam&logoColor=white)
 
 ---
 
-**Filosofía:** "Intel para la vida, NVIDIA para la guerra".
+**Usuario:** Christopher Alexis Muzo Trujillo
+
+**Filosofía:** "Intel para el sistema, NVIDIA para la guerra."
 Estabilidad absoluta, renderizado bajo demanda (On-Demand) y estética premium.
 
 </div>
@@ -20,115 +21,182 @@ Estabilidad absoluta, renderizado bajo demanda (On-Demand) y estética premium.
 
 ## 📑 Tabla de Contenidos
 
-- [1. 🧱 Fase 0: Requisitos Críticos (Headers & Multilib)](#-fase-0-requisitos-criticos-headers--multilib)
-- [2. 🏗️ Fase 1: Sistema Base & Automatización](#-fase-1-sistema-base--automatizacion)
-- [3. 🏎️ Fase 2: Gráficos Híbridos (El Fix Definitivo)](#-fase-2-graficos-hibridos-el-fix-definitivo)
-- [4. 📦 Fase 3: El Poder de AUR (Paru)](#-fase-3-el-poder-de-aur-paru)
-- [5. 🎨 Fase 4: El Rice (Gh0stzk + Picom GLX)](#-fase-4-el-rice-gh0stzk--picom-glx)
-- [6. ⚡ Fase 5: Finalización y Energía](#-fase-5-finalizacion-y-energia)
+- [1. 🏗️ Fase 1: Preparación (Archinstall / Base)](#-1-fase-1-preparación-archinstall--base)
+  - [⚠️ Guía de Reparación de Windows (Dual Boot)](#-guía-de-reparación-de-windows-dual-boot)
+- [2. �️ Fase 2: Drivers, Gráficos y Dependencias](#-2-fase-2-drivers-gráficos-y-dependencias)
+  - [A. La Regla de Oro (Headers & Multilib)](#a-la-regla-de-oro-headers--multilib)
+  - [B. Instalación de Drivers (Intel + NVIDIA Prime)](#b-instalación-de-drivers-intel--nvidia-prime)
+  - [C. Dependencias Críticas (Gaming/System)](#c-dependencias-críticas-gamingsystem)
+- [3. 📦 Fase 3: Herramientas (Paru)](#-3-fase-3-herramientas-paru)
+- [4. 🎨 Fase 4: Entorno de Trabajo (Gh0stzk + Rice)](#-4-fase-4-entorno-de-trabajo-gh0stzk--rice)
+- [5. ⚡ Fase 5: Finalización y Energía](#-5-fase-5-finalización-y-energía)
 
 ---
 
-## 🧱 Fase 0: Requisitos Críticos (Headers & Multilib)
+## 🏗️ 1. Fase 1: Preparación (Archinstall / Base)
 
-> [!CAUTION]
-> **LEER ANTES DE EMPEZAR:** Si no haces esto, tus graficas NVIDIA **no existirán** y el sistema se congelará.
+Al usar `archinstall` o manual, vamos a tener siempre en cuenta esto:
 
-### 1. Activar Repositorio Multilib
-Necesario para Steam y drivers de 32 bits.
+- **Orden de SO:** Instalar Arch Linux **siempre primero**. (Si instalamos Windows de primer punto lo que lograremos es que cuando instalemos arch el arranque de windows se rompa).
+- **Particionamiento:** `/home` **dentro de la raíz** (`/`). No separar particiones para evitar conflictos de permisos.
+- **Bootloader:** GRUB (instalar `os-prober` para detectar Windows después).
+- **Perfil:** Minimal / Base (Sin entorno de escritorio aún).
 
-1.  Edita `pacman.conf`:
+### 💾 Automatización (Guardar Configuración)
+Al terminar la instalación con `archinstall`, el sistema genera archivos `.json`. Guárdalos antes de reiniciar:
+
+```bash
+mkdir -p /mnt/home/daffodils/Documents/ArchBackups
+cp /var/log/archinstall/*.json /mnt/home/daffodils/Documents/ArchBackups/
+# O si los guardaste en /tmp:
+# cp /tmp/*.json /mnt/home/daffodils/Documents/ArchBackups/
+```
+
+---
+
+### ⚠️ Guía de Reparación de Windows (Dual Boot)
+
+**EN CASO DE QUE INSTALASTE PRIMERO WINDOWS O SE ROMPIÓ EL ARRANQUE:**
+
+<details>
+<summary>📖 <strong>Click aquí para expandir la guía de reparación paso a paso</strong></summary>
+
+<br>
+
+#### 1. Requisitos Previos
+
+- Un USB con el instalador de Windows (10 u 11).
+- Saber que los **números de volumen cambian** en cada reinicio.
+- **Controladores IRST:** (Para procesadores Intel 12va Gen o superior, indispensable para ver los discos).
+
+---
+
+#### 2. Acceder a la Consola
+
+1. Conecta el USB y arranca desde él (UEFI).
+2. Avanza hasta la selección de disco -> Carga el driver IRST -> Regresa a la pantalla de idioma.
+3. Presiona: **SHIFT + F10**
+4. Se abrirá `cmd`.
+
+---
+
+#### 3. Identificar las Particiones (Diskpart)
+
+```powershell
+diskpart
+list vol
+```
+
+**Qué buscar:**
+| Tipo | Sistema (Fs) | Tamaño | Pista | Acción |
+| --- | --- | --- | --- | --- |
+| **EFI** | **FAT32** | ~100-500 MB | "Hidden" | Asignar letra **Z** |
+| **Windows** | **NTFS** | Gigantes | Disco C: | **Anotar Letra** |
+
+---
+
+#### 4. Asignar Letra a la EFI
+
+```powershell
+select vol Num    # <-- ¡Cambia Num por el número de la EFI!
+assign letter=Z
+exit
+```
+
+---
+
+#### 5. El Comando de Reparación
+
+La estructura es: `bcdboot [Origen Windows] /s [Destino EFI] /f UEFI`
+
+Supongamos que tu Windows está en la letra **C**:
+
+```powershell
+bcdboot C:\Windows /s Z: /f UEFI
+```
+
+✅ **Éxito:** "Boot files successfully created".
+
+---
+
+#### 6. Recuperar GRUB (Linux)
+
+1. Reinicia entrando a tu Arch Linux.
+2. Ejecuta:
+```bash
+sudo os-prober
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+</details>
+
+---
+
+## 🏎️ 2. Fase 2: Drivers, Gráficos y Dependencias
+
+En esta fase preparamos el terreno para todo: el entorno BSPWM, KDE Plasma (futuro) y Gaming (Steam).
+
+### A. La Regla de Oro (Headers & Multilib)
+
+Sin esto, los drivers de NVIDIA **no existen** y Steam no funciona.
+
+1.  **Activar Multilib:**
     ```bash
     sudo nano /etc/pacman.conf
-    ```
-2.  Descomenta (quita el `#`) de estas líneas:
-    ```ini
-    [multilib]
-    Include = /etc/pacman.d/mirrorlist
-    ```
-3.  Actualiza los repositorios:
-    ```bash
+    # Descomenta las líneas [multilib]
     sudo pacman -Syu
     ```
 
-### 2. La Regla de Oro: Linux Headers
-Los drivers de NVIDIA necesitan compilarse contra el kernel. Sin los headers, la instalación falla silenciosamente y terminas usando renderizado para CPU (lento y con bugs).
+2.  **Instalar Headers:**
+    ```bash
+    sudo pacman -S linux-headers
+    # Si usas kernel LTS: sudo pacman -S linux-lts-headers
+    ```
+
+### B. Instalación de Drivers (Intel + NVIDIA Prime)
+
+Instalaremos TODO el stack gráfico para soporte híbrido y Vulkan (necesario para Steam/Proton).
 
 ```bash
-# Si usas el kernel estándar (linux)
-sudo pacman -S linux-headers
-
-# Si usas kernel LTS (linux-lts)
-# sudo pacman -S linux-lts-headers
-```
-
----
-
-## 🏗️ Fase 1: Sistema Base & Automatización
-
-Si estás instalando con `archinstall`, guarda tu configuración para replicarla en el futuro.
-
-### � Respaldo de Configuración (archinstall)
-Al terminar la instalación, el sistema genera archivos `.json` con todas tus elecciones. Guárdalos antes de reiniciar o salir.
-
-```bash
-# Crear directorio de respaldo en tu usuario
-mkdir -p /mnt/home/daffodils/Documents/ArchBackups
-
-# Copiar los JSON de configuración
-cp /var/log/archinstall/*.json /mnt/home/daffodils/Documents/ArchBackups/
-```
-
----
-
-## 🏎️ Fase 2: Gráficos Híbridos (El Fix Definitivo)
-
-Olvídate de scripts complicados para cambiar de GPU y reiniciar. Usaremos **PRIME Offloading**.
-- **Intel:** Maneja el escritorio, videos y navegador. (Siempre activa, ahorra batería).
-- **NVIDIA:** Se despierta SOLO cuando vas a jugar o renderizar.
-
-### 1. Limpieza de `mkinitcpio`
-El arranque debe ser limpio. No queremos forzar que NVIDIA cargue antes de tiempo.
-
-Edita `/etc/mkinitcpio.conf`:
-```bash
-MODULES=(i915)
-# ¡NO pongas 'nvidia' aquí! Dejemos que el sistema lo cargue dinámicamente.
-```
-Regenera: `sudo mkinitcpio -P`
-
-### 2. Instalación de Drivers (DKMS)
-Instalaremos el driver DKMS para que se recompil automáticamente cuando actualices el kernel.
-
-```bash
-# Instala TODO el stack gráfico de una sola vez
 sudo pacman -S mesa lib32-mesa vulkan-intel lib32-vulkan-intel intel-media-driver \
-               nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings nvidia-prime
+               nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings nvidia-prime \
+               vulkan-icd-loader lib32-vulkan-icd-loader
 ```
 
-### 3. Activar NVIDIA (Compilación)
-Para asegurar que el módulo se construya ahora mismo:
+1.  **Forzar compilación del módulo NVIDIA:**
+    ```bash
+    # Reemplaza la versión por la instalada, ej: 580.126.09
+    sudo dkms install nvidia/$(pacman -Q nvidia-dkms | awk '{print $2}' | cut -d'-' -f1)
+    ```
+
+2.  **Fix Pantalla Negra (mkinitcpio):**
+    Editar `/etc/mkinitcpio.conf`:
+    ```bash
+    # SOLO módulos de Intel. NO pongas 'nvidia' aquí para evitar bloqueos.
+    MODULES=(i915)
+    ```
+    Regenerar: `sudo mkinitcpio -P`
+
+### C. Dependencias Críticas (Gaming/System)
+
+Paquetes necesarios para compilar, audio, bluetooth y utilidades generales.
+
 ```bash
-# Reemplaza la versión por la que descargó pacman, ej: 580.126.09
-sudo dkms install nvidia/$(pacman -Q nvidia-dkms | awk '{print $2}' | cut -d'-' -f1)
+sudo pacman -S base-devel git NetworkManager bluez bluez-utils pipewire pipewire-alsa pipewire-pulse \
+               alsa-utils brightnessctl playerctl unzip unrar p7zip ntfs-3g
 ```
 
 > [!IMPORTANT]
-> **REINICIA AHORA.**
-> `sudo reboot`
->
-> Al volver, verifica que tienes los dos proveedores: `xrandr --listproviders` (Debe salir 2).
+> **REINICIA AHORA (`sudo reboot`)** antes de continuar.
 
 ---
 
-## 📦 Fase 3: El Poder de AUR (Paru)
+## 📦 3. Fase 3: Herramientas (Paru)
 
-Reemplazaremos `yay` por `paru` (escrito en Rust, más rápido y moderno).
+Reemplazamos `yay` por `paru` (más rápido, escrito en Rust).
 
 ```bash
-# Instalar Paru desde AUR
 cd ~
-sudo pacman -S --needed base-devel
 git clone https://aur.archlinux.org/paru.git
 cd paru
 makepkg -si
@@ -136,90 +204,78 @@ makepkg -si
 
 ---
 
-## 🎨 Fase 4: El Rice (Gh0stzk + Picom GLX)
+## 🎨 4. Fase 4: Entorno de Trabajo (Gh0stzk + Rice)
 
-Ahora que tenemos gráficos funcionales, podemos instalar el entorno visual con aceleración completa.
+### A. Prerequisitos del Rice
+Instalamos esto primero para evitar errores visuales.
 
-### 1. Prerequisitos
-Instalar dependencias visuales antes del script para evitar errores.
 ```bash
-paru -S ttf-jetbrains-mono-nerd ttf-font-awesome xorg-xinit xorg-server bspwm sxhkd polybar picom dunst rofi
+paru -S bspwm sxhkd polybar picom dunst rofi thunar feh maim xdotool xclip \
+        ttf-jetbrains-mono-nerd ttf-font-awesome
 ```
 
-### 2. Ejecutar RiceInstaller
+### B. Instalar el Rice
 ```bash
 curl -LO http://gh0stzk.github.io/dotfiles/RiceInstaller
 chmod +x RiceInstaller
 ./RiceInstaller
 ```
 
-### 3. Optimización de Picom (GLX)
-El instalador pondrá un picom por defecto. Asegúrate de que `~/.config/bspwm/config/picom.conf` use:
+### C. Optimización Picom (GLX Híbrido)
+Asegurar que `~/.config/bspwm/config/picom.conf` use:
 ```ini
 backend = "glx";
 vsync = true;
-use-damage = true;  # En Intel Híbrido moderno, esto suele ir bien.
-                    # Si ves glitches, cámbialo a false.
+use-damage = false;  # CRITICO para Intel Gen 12+
 ```
 
 ---
 
-## ⚡ Fase 5: Finalización y Energía
+## ⚡ 5. Fase 5: Finalización y Energía
 
-### 1. Gestor de Sesión (LightDM)
-Evita la pantalla negra por arranque rápido en procesadores i9/i7 modernos.
-
-Editar `/etc/lightdm/lightdm.conf`:
+### A. LightDM (Login)
+Evitar pantalla negra por arranque rápido.
+`/etc/lightdm/lightdm.conf`:
 ```ini
 [LightDM]
 logind-check-graphical=true
 ```
 Activar: `sudo systemctl enable lightdm`
 
-### 2. Script de Refresco (120Hz/60Hz)
-Cambia la tasa de refresco automáticamente al desconectar el cargador.
+### B. Script de Energía (120Hz/60Hz)
 
-**Archivo:** `/usr/local/bin/toggle_refresh_rate.sh`
+**Ruta:** `/usr/local/bin/toggle_refresh_rate.sh`
+
 ```bash
 #!/bin/bash
 export DISPLAY=:0
 export XAUTHORITY="/home/daffodils/.Xauthority"
-
-# Detectar estado de batería (Adaptar ADP0 según tu sistema)
+# Detectar AC (ajustar ADP0 según tu sistema)
 if grep -q 1 /sys/class/power_supply/ADP0/online; then
-    xrandr --output eDP-1 --mode 1920x1080 --rate 120.00 # O 300.00 si tu pantalla lo soporta
+    xrandr --output eDP-1 --mode 1920x1080 --rate 120.00
 else
     xrandr --output eDP-1 --mode 1920x1080 --rate 60.00
 fi
 ```
-Dale permisos: `sudo chmod +x /usr/local/bin/toggle_refresh_rate.sh`
+Permisos: `sudo chmod +x /usr/local/bin/toggle_refresh_rate.sh`
 
-### 3. Regla Udev
-Ejecutar el script al conectar/desconectar.
-`/etc/udev/rules.d/99-power.rules`:
+### C. Regla Udev (Activación Automática)
+`/etc/udev/rules.d/99-powermanagement.rules`:
 ```
 SUBSYSTEM=="power_supply", ACTION=="change", RUN+="/usr/local/bin/toggle_refresh_rate.sh"
 ```
 
 ---
 
-### 🎮 Cómo jugar (Usar la NVIDIA)
+### 🎮 Notas Finales: Gaming (Steam)
 
-Por defecto, todo corre en Intel (fresco y silencioso).
-Para jugar, usa `prime-run`:
+Como instalamos `nvidia-prime` y las dependencias `lib32-nvidia-utils` en la Fase 2, Steam funcionará perfecto.
 
+Para jugar con la dedicada:
 ```bash
-# Steam
 prime-run steam
-
-# Juegos sueltos
-prime-run ./juego.x86_64
-
-# Verificar que funciona
-prime-run glxinfo | grep "OpenGL renderer"
-# Debe decir: NVIDIA GeForce RTX 3070 Ti...
 ```
 
 <div align="center">
-<sub>� Optimizado para Arch Linux Híbrido - Guía 2026</sub>
+<sub>🚀 Guía Finalizada - 2026</sub>
 </div>

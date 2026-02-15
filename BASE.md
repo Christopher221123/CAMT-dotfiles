@@ -1,7 +1,8 @@
 <div align="center">
 
-# 🐧 Arch Linux — Guía de Instalación Maestra
-### Dual Boot Windows 11 · Intel + NVIDIA · BSPWM + Rice · Steam Ready
+# 🐧 Arch Linux — Guía de Instalación Completa
+
+### Dual Boot con Windows · Intel + NVIDIA · BSPWM + Gh0stzk Rice · LightDM · EnvyControl
 
 ![Arch Linux](https://img.shields.io/badge/Arch_Linux-1793D1?style=for-the-badge&logo=arch-linux&logoColor=white)
 ![NVIDIA](https://img.shields.io/badge/NVIDIA-76B900?style=for-the-badge&logo=nvidia&logoColor=white)
@@ -14,38 +15,26 @@
 
 **Usuario:** Christopher Alexis Muzo Trujillo
 
-**Filosofía:** Cada GUI es para un propósito específico.
+**Filosofía:** Arch primero, minimalismo absoluto, gráficos bajo demanda.
+
 </div>
 
 ---
 
 ## 📑 Tabla de Contenidos
 
-- [1. 🏗️ Fase 1: Preparación (Archinstall / Base)](#-1-fase-1-preparación-archinstall--base)
-  - [💾 Automatización (Guardar Configuración)](#-automatización-guardar-configuración)
-  - [⚠️ Guía de Reparación de Windows (Dual Boot)](#️-guía-de-reparación-de-windows-dual-boot)
-- [2. 🏎️ Fase 2: Drivers, Gráficos y Dependencias](#️-2-fase-2-drivers-gráficos-y-dependencias)
-  - [A. La Regla de Oro (Headers & Multilib)](#a-la-regla-de-oro-headers--multilib)
-  - [B. Instalación de Drivers (Intel + NVIDIA Prime)](#b-instalación-de-drivers-intel--nvidia-prime)
-  - [C. Fix de Pantalla Negra (Early KMS)](#c-fix-de-pantalla-negra-early-kms)
-  - [D. Dependencias Críticas (Gaming/System)](#d-dependencias-críticas-gamingsystem)
-- [3. 🎨 Fase 3: Entorno de Trabajo (Capas)](#-3-fase-3-entorno-de-trabajo-capas)
-  - [A. Capa Base: AUR Helper (Paru)](#a-capa-base-aur-helper-paru)
-  - [B. Capa de Estabilidad: Prerequisitos y ZSH](#b-capa-de-estabilidad-prerequisitos-y-zsh)
-  - [C. Capa Estética: RiceInstaller](#c-capa-estética-riceinstaller)
-- [4. ⚡ Fase 4: Configuración Avanzada — Energía y Pantalla](#-4-fase-4-configuración-avanzada--energía-y-pantalla)
-  - [A. Apagar la GPU Dedicada](#a-apagar-la-gpu-dedicada)
-  - [B. Auditoría de Identificadores](#b-auditoría-de-identificadores)
-  - [C. El Script Maestro](#c-el-script-maestro)
-  - [D. El Gatillo (udev)](#d-el-gatillo-udev)
-  - [E. Auto-inicio con BSPWM](#e-auto-inicio-con-bspwm)
-- [🎮 Notas Finales: Gaming (Steam)](#-notas-finales-gaming-steam)
+- [1. 🏗️ Fase de Preparación (Archinstall / Base)](#-1-fase-de-preparación-archinstall--base)
+  - [⚠️ En caso de que instalaste primero Windows](#-en-caso-de-que-instalaste-primero-windows)
+- [2. 🏎️ Drivers y Gráficos (Intel + NVIDIA)](#%EF%B8%8F-2-drivers-y-gráficos-intel--nvidia)
+- [3. 🎨 Entorno de Trabajo (Gh0stzk + BSPWM)](#-3-entorno-de-trabajo-gh0stzk--bspwm)
+- [4. 🖥️ Gestor de Inicio de Sesión (LightDM)](#%EF%B8%8F-4-gestor-de-inicio-de-sesión-lightdm)
+- [5. ⚡ Configuración Avanzada: Energía y Pantalla (BSPWM)](#-5-configuración-avanzada-energía-y-pantalla-bspwm)
 
 ---
 
-## 🏗️ 1. Fase 1: Preparación (Archinstall / Base)
+## 🏗️ 1. Fase de Preparación (Archinstall / Base)
 
-Al usar `archinstall` o instalación manual, vamos a tener siempre en cuenta esto:
+Al usar `archinstall` o manual, vamos a tener siempre en cuenta esto:
 
 - **Orden de SO:** Instalar Arch Linux **siempre primero**. (Si instalamos Windows de primer punto lo que lograremos es que cuando instalemos arch el arranque de windows se rompa).
 
@@ -61,27 +50,13 @@ Al usar `archinstall` o instalación manual, vamos a tener siempre en cuenta est
   - `ntfs-3g` — Para que Arch pueda leer/escribir en tu partición de Windows.
   - `git` y `base-devel` — Para instalar `yay` y tus dotfiles.
   - `nano` — Editor de texto.
-  - `lightdm`, `lightdm-gtk-greeter`, `lightdm-gtk-greeter-settings` — Display Manager.
-
-### 💾 Automatización (Guardar Configuración)
-
-Al terminar la instalación con `archinstall`, el sistema genera archivos `.json`. Guárdalos antes de reiniciar.
-
-> [!NOTE]
-> La carpeta por defecto es `/tmp`. Si tus archivos están en otra ruta, ajusta el comando `cp` acorde.
-
-```bash
-mkdir -p /mnt/home/daffodils/Documents/ArchBackups
-
-cp /tmp/*.json /mnt/home/daffodils/Documents/ArchBackups/
-```
 
 ---
 
-### ⚠️ Guía de Reparación de Windows (Dual Boot)
+### ⚠️ En caso de que instalaste primero Windows
 
 <details>
-<summary>📖 <strong>Click aquí EN CASO DE QUE INSTALASTE PRIMERO WINDOWS O SE ROMPIÓ EL ARRANQUE de Windows por culpa de Arch:</strong></summary>
+<summary>📖 <strong>Click aquí para expandir la guía de reparación de arranque Windows + Linux</strong></summary>
 
 <br>
 
@@ -96,8 +71,8 @@ cp /tmp/*.json /mnt/home/daffodils/Documents/ArchBackups/
 #### 2. Acceder a la Consola
 
 1. Conecta el USB y arranca el PC desde él (UEFI).
-2. Avanzamos hasta llegar al punto de seleccion de disco.
-3. Instalamos el IRST y regresamos hasta la pantalla de seleccion de idioma.
+2. Avanzamos hasta llegar al punto de seleccion de disco
+3. Instalamos el IRST y regresamos hasta la pantalla de seleccion de idioma
 4. En la primera pantalla (selección de idioma), presiona:
 
    > **SHIFT + F10**
@@ -165,7 +140,7 @@ bcdboot X:\Windows /s Z: /f UEFI
 
 #### 6. Recuperar el Menú de Linux (GRUB)
 
-1. Reinicia y selecciona Arch Linux.
+1. Reinicia y entra a la seleccionamos Arch Linux.
 2. Inicia sesión en tu Arch Linux / Distro.
 3. Abre la terminal y actualiza el GRUB para que detecte el Windows arreglado:
 
@@ -181,48 +156,24 @@ sudo grub-mkconfig -o /boot/grub/grub.cfg
 
 ---
 
-## 🏎️ 2. Fase 2: Drivers, Gráficos y Dependencias
+## 🏎️ 2. Drivers y Gráficos (Intel + NVIDIA)
 
-En esta fase preparamos el terreno para todo: el entorno BSPWM, KDE Plasma (futuro) y Gaming (Steam).
+Instalacion de los controladores graficos para el correcto funcionamiento
 
-### A. La Regla de Oro (Headers & Multilib)
+### 📦 Instalacion de Drivers
 
-Sin esto, los drivers de NVIDIA **no existen** y Steam no funciona.
-
-1. **Activar Multilib:**
-    ```bash
-    sudo nano /etc/pacman.conf
-    # Descomenta las líneas [multilib]
-    sudo pacman -Syu
-    ```
-
-2. **Instalar Headers:**
-    ```bash
-    sudo pacman -S linux-headers
-    # Si usas kernel LTS: sudo pacman -S linux-lts-headers
-    ```
-
-### B. Instalación de Drivers (Intel + NVIDIA Prime)
-
-Instalaremos TODO el stack gráfico para soporte híbrido y Vulkan (necesario para Steam/Proton).
+Instalamos todos los drivers para evitar el error de dependencias de 32 bits:
 
 ```bash
-sudo pacman -S mesa lib32-mesa vulkan-intel lib32-vulkan-intel intel-media-driver \
-               nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings nvidia-prime \
-               vulkan-icd-loader lib32-vulkan-icd-loader
+sudo pacman -Syu
+sudo pacman -S mesa lib32-mesa vulkan-intel lib32-vulkan-intel intel-media-driver nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings nvidia-prime
 ```
 
-1. **Forzar compilación del módulo NVIDIA:**
-    ```bash
-    # Reemplaza la versión por la instalada, ej: 580.126.09
-    sudo dkms install nvidia/$(pacman -Q nvidia-dkms | awk '{print $2}' | cut -d'-' -f1)
-    ```
-
-### C. Fix de Pantalla Negra (Early KMS)
+### 🖥️ Fix de Pantalla Negra (Early KMS)
 
 Editar `/etc/mkinitcpio.conf`:
 
-1. Abre el archivo con:
+1. En la línea `MODULES=()` agregar los módulos de video. Abre el archivo con:
 
    ```bash
    sudo nano /etc/mkinitcpio.conf
@@ -237,7 +188,7 @@ Editar `/etc/mkinitcpio.conf`:
    >
    > **✅ Después (como debe quedar):**
    > ```
-   > MODULES=(i915 )
+   > MODULES=(intel_agp i915 nvidia nvidia_modeset nvidia_uvm nvidia_drm)
    > ```
 
    > [!WARNING]
@@ -251,82 +202,144 @@ Editar `/etc/mkinitcpio.conf`:
    sudo mkinitcpio -P
    ```
 
-### D. Dependencias Críticas (Gaming/System)
+---
 
-Paquetes necesarios para compilar, audio, bluetooth y utilidades generales.
+## 🎨 3. Entorno de Trabajo (Gh0stzk + BSPWM)
 
-```bash
-sudo pacman -S base-devel git NetworkManager bluez bluez-utils pipewire pipewire-alsa pipewire-pulse \
-               alsa-utils brightnessctl playerctl unzip unrar p7zip ntfs-3g
-```
+En esta fase pasamos de la terminal básica a la interfaz gráfica personalizada. Seguiremos un orden de "Capas": primero la base, luego el ayudante de AUR, y al final la estética.
 
-> [!IMPORTANT]
-> **REINICIA AHORA (`sudo reboot`)** antes de continuar.
+### A. Capa Base: Video y AUR Helper (`yay`)
+
+Antes de cualquier otra cosa, necesitamos el servidor de video y la herramienta para instalar paquetes de la comunidad.
+
+1. **Instalar base de video:**
+
+   ```bash
+   sudo pacman -S xorg-server xorg-xinit xorg-xrandr
+   ```
+
+2. **Instalar `yay` (Indispensable para el Rice):**
+
+   ```bash
+   cd ~
+   sudo pacman -S --needed base-devel git
+   git clone https://aur.archlinux.org/yay.git
+   cd yay
+   makepkg -si
+   ```
 
 ---
 
-## 🎨 3. Fase 3: Entorno de Trabajo (Capas)
+### B. Capa de Estabilidad: Pre-requisitos del Rice
 
-En esta fase pasamos de la terminal básica a la interfaz gráfica personalizada capa por capa.
+Para evitar errores como el de `fzf-tab` (ZSH) o iconos rotos, instalamos los componentes críticos **antes** de correr el script de Gh0stzk.
 
-### A. Capa Base: AUR Helper (Paru)
+1. **Dependencias Core:**
 
-Antes de cualquier otra cosa, necesitamos la herramienta para instalar paquetes de la comunidad (AUR), la cual reemplazará a `yay`.
+   ```bash
+   sudo pacman -S bspwm sxhkd polybar picom dunst rofi thunar feh maim xdotool xclip
+   ```
 
-```bash
-cd ~
-git clone https://aur.archlinux.org/paru.git
-cd paru
-makepkg -si
-```
+2. **Dependencias de temas:**
 
-### B. Capa de Estabilidad: Prerequisitos y ZSH
+   ```bash
+   sudo pacman -S ttf-jetbrains-mono-nerd ttf-jetbrains-mono ttf-font-awesome
+   ```
 
-Para evitar errores visuales o de la terminal (como el famoso error de `fzf-tab`), instalamos esto **antes**.
+3. **Fix preventivo para ZSH:**
 
-1. **Dependencias Visuales:**
-    ```bash
-    paru -S xorg-server xorg-xinit bspwm sxhkd polybar picom dunst rofi thunar feh maim xdotool xclip \
-            ttf-jetbrains-mono-nerd ttf-font-awesome
-    ```
+   ```bash
+   sudo mkdir -p /usr/share/zsh/plugins/
+   sudo git clone https://github.com/Aloxaf/fzf-tab /usr/share/zsh/plugins/fzf-tab-git
+   ```
 
-2. **Fix Preventivo para ZSH (Crítico):**
-    ```bash
-    sudo mkdir -p /usr/share/zsh/plugins/
-    sudo git clone https://github.com/Aloxaf/fzf-tab /usr/share/zsh/plugins/fzf-tab-git
-    ```
+---
 
-### C. Capa Estética: RiceInstaller
+### C. Capa Estética: Ejecución del RiceInstaller
 
 Ahora que el sistema tiene todo lo necesario, el instalador de Gh0stzk funcionará de manera fluida.
 
-1. **Ejecutar Instalador:**
-    ```bash
-    curl -LO http://gh0stzk.github.io/dotfiles/RiceInstaller
-    chmod +x RiceInstaller
-    ./RiceInstaller
-    ```
+```bash
+# Descargar el instalador oficial
+curl -LO http://gh0stzk.github.io/dotfiles/RiceInstaller
 
-2. **Optimización Picom (GLX Híbrido):**
-    Asegurar que `~/.config/bspwm/config/picom.conf` use:
-    ```ini
-    backend = "glx";
-    vsync = true;
-    use-damage = false;  # CRITICO para Intel Gen 12+
-    ```
+# Dar permisos y ejecutar
+chmod +x RiceInstaller
+./RiceInstaller
+```
+
+### 🔧 Instalar EnvyControl
+
+```bash
+yay -S envycontrol
+```
 
 ---
 
-## ⚡ 4. Fase 4: Configuración Avanzada — Energía y Pantalla
+## 🖥️ 4. Gestor de Inicio de Sesión (LightDM)
+
+### A. Instalación de Componentes
+
+```bash
+sudo pacman -S lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings
+```
+
+### B. Configuración Crítica para Hardware Moderno
+
+Como tu laptop tiene un **i9 de 12va generación** y gráficos híbridos, el sistema arranca tan rápido que LightDM puede intentar abrirse antes de que los drivers de video estén listos. Para evitar una pantalla negra, haz este ajuste:
+
+1. **Editar el archivo de configuración:**
+
+   ```bash
+   sudo nano /etc/lightdm/lightdm.conf
+   ```
+
+2. Busca la sección `[LightDM]` (está casi al principio).
+
+3. Descomenta (quita el `#`) o añade la línea `logind-check-graphical=true`. La sección debe quedar **así:**
+
+   > **❌ Antes (original):**
+   > ```ini
+   > [LightDM]
+   > #logind-check-graphical=false
+   > ```
+   >
+   > **✅ Después (como debe quedar):**
+   > ```ini
+   > [LightDM]
+   > logind-check-graphical=true
+   > ```
+
+   > [!WARNING]
+   > Asegúrate de quitar el `#` del inicio de la línea Y cambiar `false` por `true`. Si la línea no existe, simplemente agrégala debajo de `[LightDM]`.
+
+4. Guarda y sal (`Ctrl+O`, `Enter`, `Ctrl+X`).
+
+### C. Activación del Servicio
+
+Este paso es el que le dice a Arch que, al encender, debe lanzar la interfaz gráfica automáticamente.
+
+```bash
+sudo systemctl enable lightdm
+```
+
+---
+
+## ⚡ 5. Configuración Avanzada: Energía y Pantalla (BSPWM)
 
 Aquí es donde configuramos que el sistema sea inteligente y cambie los hercios según si estás conectado a la corriente o usando la batería.
 
-> [!IMPORTANT]
-> Reinicia el sistema operativo después de ejecutar este comando.
+**A. Primero apagamos la tarjeta grafica dedicada:**
+
+```bash
+sudo envycontrol -s integrated
+```
+
+> Reiniciamos el sistema operativo después de ejecutar este comando.
 
 ---
 
-### B. Auditoría de Identificadores
+### 🔍 Paso A: Auditoría de Identificadores
 
 Antes de activar el script (especialmente tras una reinstalación o cambio de modo de GPU), verifica estos datos:
 
@@ -336,7 +349,7 @@ Antes de activar el script (especialmente tras una reinstalación o cambio de mo
 
 ---
 
-### C. El Script Maestro
+### 🛠️ Paso B: El Script Maestro
 
 **Ruta:** `/usr/local/bin/toggle_refresh_rate.sh`
 
@@ -381,7 +394,7 @@ sudo chmod +x /usr/local/bin/toggle_refresh_rate.sh
 
 ---
 
-### D. El Gatillo (udev)
+### 🛰️ Paso C: El Gatillo (udev)
 
 Para que el Kernel "detone" el script solo cuando sea necesario.
 
@@ -402,35 +415,8 @@ sudo udevadm control --reload-rules && sudo udevadm trigger
 
 ---
 
-### E. Auto-inicio con BSPWM
-
-En los dotfiles de Gh0stzk, el archivo que controla qué se abre al iniciar es el `bspwmrc`.
-
-1. Edita el archivo:
-
-    ```bash
-    nano ~/.config/bspwm/bspwmrc
-    ```
-
-2. Añade esta línea al final:
-
-    ```bash
-    # Forzar detección de hercios al iniciar sesión
-    /usr/local/bin/toggle_refresh_rate.sh &
-    ```
-
----
-
-## 🎮 Notas Finales: Gaming (Steam)
-
-Como instalamos `nvidia-prime` y las dependencias `lib32-nvidia-utils` en la Fase 2, Steam funcionará perfecto.
-
-Para jugar con la dedicada:
-
-```bash
-prime-run steam
-```
-
 <div align="center">
-<sub>🚀 Guía Finalizada - 2026</sub>
+
+<sub>📅 Última actualización — Febrero 2026</sub>
+
 </div>
